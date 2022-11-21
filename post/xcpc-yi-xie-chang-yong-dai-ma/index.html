@@ -1,0 +1,339 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>XCPC 一些常用代码 | 中宮 さとり　</title>
+<meta name="description" content="只有在重重积累下，才能得到提升">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ChirunoC9.github.io/favicon.ico?v=1669018828300">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://ChirunoC9.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://ChirunoC9.github.io">
+        <img class="avatar" src="https://ChirunoC9.github.io/images/avatar.png?v=1669018828300" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://ChirunoC9.github.io">
+        <h1 class="site-title">中宮 さとり　</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+            <div class="feature-container" style="background-image: url('https://ChirunoC9.github.io/post-images/xcpc-yi-xie-chang-yong-dai-ma.png')">
+            </div>
+          
+          <h2 class="post-title">XCPC 一些常用代码</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-11-16</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://ChirunoC9.github.io/tag/pxFKh3eP8/">
+                    XCPC
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content" v-pre>
+            <h1 id="常用代码">常用代码</h1>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#%E7%AE%80%E4%BB%8B">简介</a></li>
+<li><a href="#%E4%B8%BB%E9%A2%98%E6%9D%BF%E5%AD%90">主题板子</a></li>
+<li><a href="#%E4%B8%AA%E4%BA%BA%E6%9D%BF%E5%AD%90">个人板子</a></li>
+<li><a href="#debug-%E5%BF%AB%E6%8D%B7%E6%9D%BF%E5%AD%90">Debug 快捷板子</a></li>
+<li><a href="#%E6%A8%A1%E6%95%B0%E7%B1%BB">模数类</a></li>
+<li><a href="#gcc--clang-%E7%BC%96%E8%AF%91%E6%8C%87%E4%BB%A4">gcc / clang 编译指令</a></li>
+</ul>
+<h2 id="简介">简介</h2>
+<p>虽然这只是用来存放一些日常的 XCPC 代码模板，但是日常训练是用得到的。</p>
+<h2 id="主题板子">主题板子</h2>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+template &lt;class T&gt; constexpr T inf = std::numeric_limits&lt;T&gt;::max() / 2;
+using ll = long long;
+#define all(x) std::begin(x), std::end(x)
+
+template &lt;class T&gt; void _debug(const char *s, const T &amp;t) {
+	std::cerr &lt;&lt; s &lt;&lt; '=' &lt;&lt; t &lt;&lt; std::endl;
+}
+template &lt;class F, class... R&gt; void _debug(const char *s, const F &amp;f, const R &amp;...r) {
+	while (*s != ',') std::cerr &lt;&lt; *s ++;
+	std::cerr &lt;&lt; '=' &lt;&lt; f &lt;&lt; &quot;,&quot;;
+	_debug(s + 1, r...);
+}
+template &lt;class... A&gt; void ddebug(int line, const char *s, const A &amp;...a) {
+	std::cerr &lt;&lt; '[' &lt;&lt; line &lt;&lt; &quot;] &quot;;
+	_debug(s, a...);
+}
+
+#ifndef ONLINE_JUDGE
+#define debug(...) ddebug(__LINE__, #__VA_ARGS__, __VA_ARGS__)
+#else
+#define debug(...)
+#endif
+
+void Solve() {
+
+}
+
+int32_t main() {
+    std::cin.tie(nullptr)-&gt;sync_with_stdio(false);
+    std::cout &lt;&lt; std::fixed &lt;&lt; std::setprecision(12);
+    int t = 1;
+    std::cin &gt;&gt; t;
+    while (t --) {
+        Solve();
+    }
+}
+</code></pre>
+<h2 id="个人板子">个人板子</h2>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+template &lt;class T&gt; constexpr T inf = std::numeric_limits&lt;T&gt;::max() / 2;
+using ll = long long;
+
+void Solve() {
+	
+}
+
+int32_t main() {
+	std::cin.tie(nullptr)-&gt;sync_with_stdio(false);
+	std::cout &lt;&lt; std::fixed &lt;&lt; std::setprecision(12);
+	int t = 1;
+	std::cin &gt;&gt; t;
+	for (int rp = 1; t --&gt; 0; rp ++) {
+		Solve();
+	}
+}
+</code></pre>
+<h2 id="debug-快捷板子">Debug 快捷板子</h2>
+<pre><code class="language-cpp">template &lt;class T&gt; void _debug(const char *s, const T &amp;t) {
+	std::cerr &lt;&lt; s &lt;&lt; '=' &lt;&lt; t &lt;&lt; std::endl;
+}
+template &lt;class F, class... R&gt; void _debug(const char *s, const F &amp;f, const R &amp;...r) {
+	while (*s != ',') std::cerr &lt;&lt; *s ++;
+	std::cerr &lt;&lt; '=' &lt;&lt; f &lt;&lt; &quot;,&quot;;
+	_debug(s + 1, r...);
+}
+template &lt;class... A&gt; void ddebug(int line, const char *s, const A &amp;...a) {
+	std::cerr &lt;&lt; '[' &lt;&lt; line &lt;&lt; &quot;] &quot;;
+	_debug(s, a...);
+}
+
+#ifndef ONLINE_JUDGE
+#define debug(...) ddebug(__LINE__, #__VA_ARGS__, __VA_ARGS__)
+#else
+#define debug(...)
+#endif
+</code></pre>
+<h2 id="模数类">模数类</h2>
+<pre><code class="language-cpp">template &lt;int _P&gt;
+struct Modint {
+	using ll = int64_t;
+	static constexpr int P = _P;
+	int v;
+	Modint() : v(0) {}
+	Modint(ll _v) { v = _v % P; if (v &lt; 0)v += P; }
+	explicit operator int() const { return v; }
+	explicit operator long long() const { return v; }
+	explicit operator bool() const { return v &gt; 0; }
+	bool operator == (const Modint &amp;o) const { return v == o.v; }
+	bool operator != (const Modint &amp;o) const { return v != o.v; }
+	Modint operator - () const { return Modint(v ? P - v : 0); }
+	Modint operator + () const { return *this; }
+	Modint &amp; operator ++ () { v++; if (v == P)v = 0; return *this; }
+	Modint &amp; operator -- () { if (v == 0)v = P; v--; return *this; }
+	Modint operator ++ (int) { Modint r = *this; ++*this; return r; }
+	Modint operator -- (int) { Modint r = *this; --*this; return r; }
+	Modint &amp; operator += (const Modint &amp;o) { v += o.v; if (v &gt;= P)v -= P; return *this; }
+	Modint operator + (const Modint &amp; o)const { return Modint(*this) += o; }
+	Modint &amp; operator -= (const Modint &amp; o) { v -= o.v; if (v &lt; 0)v += P; return *this; }
+	Modint operator - (const Modint &amp;o)const { return Modint(*this) -= o; }
+	Modint &amp; operator *=(const Modint &amp; o) { v = (int)(((ll)v)*o.v%P); return *this; }
+	Modint operator * (const Modint &amp; o)const { return Modint(*this) *= o; }
+	Modint &amp; operator /= (const Modint &amp; o) { return (*this) *= o.Inv(); }
+	Modint operator / (const Modint &amp; o)const { return Modint(*this) /= o; }
+	friend Modint operator + (const Modint &amp;x, const ll &amp;o) { return x + (Modint)o; }
+	friend Modint operator + (const ll &amp;o, const Modint &amp;x) { return x + (Modint)o; }
+	friend Modint operator - (const Modint &amp;x, const ll &amp;o) { return x - (Modint)o; }
+	friend Modint operator - (const ll &amp;o, const Modint &amp;x) { return (Modint)o - x; }
+	friend Modint operator * (const Modint &amp;x, const ll &amp;o) { return x * (Modint)o; }
+	friend Modint operator * (const ll &amp;o, const Modint &amp;x) { return x * (Modint)o; }
+	friend Modint operator / (const Modint &amp;x, const ll &amp;o) { Modint c = o; return x * c.Inv(); }
+	friend Modint operator / (const ll &amp;o, const Modint &amp;x) { Modint c = o; return c * x.Inv(); }
+	Modint operator ^ (ll o)const { Modint r = 1, t = v; while (o) { if (o &amp; 1)r *= t; t *= t; o &gt;&gt;= 1; }return r; }
+	Modint operator ~ () { return (*this) ^ (P - 2); }
+	Modint Inv() const { return (*this) ^ (P - 2); }
+	friend std::istream &amp; operator &gt;&gt; (std::istream &amp;in, Modint &amp;x) { ll d; in &gt;&gt; d; x = d; return in; }
+	friend std::ostream &amp; operator &lt;&lt; (std::ostream &amp;out, const Modint &amp;x) { out &lt;&lt; x.v; return out; }
+};
+</code></pre>
+<h2 id="gcc-clang-编译指令">gcc / clang 编译指令</h2>
+<pre><code>g++ -Wall -std=c++20 a.cpp -o a.out
+</code></pre>
+<p>还有火车头</p>
+<pre><code class="language-cpp">#pragma GCC optimize(1)
+#pragma GCC optimize(2)
+#pragma GCC optimize(3)
+#pragma GCC optimize(&quot;Ofast&quot;)
+#pragma GCC optimize(&quot;inline&quot;)
+#pragma GCC optimize(&quot;-fgcse&quot;)
+#pragma GCC optimize(&quot;-fgcse-lm&quot;)
+#pragma GCC optimize(&quot;-fipa-sra&quot;)
+#pragma GCC optimize(&quot;-ftree-pre&quot;)
+#pragma GCC optimize(&quot;-ftree-vrp&quot;)
+#pragma GCC optimize(&quot;-fpeephole2&quot;)
+#pragma GCC optimize(&quot;-ffast-math&quot;)
+#pragma GCC optimize(&quot;-fsched-spec&quot;)
+#pragma GCC optimize(&quot;unroll-loops&quot;)
+#pragma GCC optimize(&quot;-falign-jumps&quot;)
+#pragma GCC optimize(&quot;-falign-loops&quot;)
+#pragma GCC optimize(&quot;-falign-labels&quot;)
+#pragma GCC optimize(&quot;-fdevirtualize&quot;)
+#pragma GCC optimize(&quot;-fcaller-saves&quot;)
+#pragma GCC optimize(&quot;-fcrossjumping&quot;)
+#pragma GCC optimize(&quot;-fthread-jumps&quot;)
+#pragma GCC optimize(&quot;-funroll-loops&quot;)
+#pragma GCC optimize(&quot;-freorder-blocks&quot;)
+#pragma GCC optimize(&quot;-fschedule-insns&quot;)
+#pragma GCC optimize(&quot;inline-functions&quot;)
+#pragma GCC optimize(&quot;-ftree-tail-merge&quot;)
+#pragma GCC optimize(&quot;-fschedule-insns2&quot;)
+#pragma GCC optimize(&quot;-fstrict-aliasing&quot;)
+#pragma GCC optimize(&quot;-falign-functions&quot;)
+#pragma GCC optimize(&quot;-fcse-follow-jumps&quot;)
+#pragma GCC optimize(&quot;-fsched-interblock&quot;)
+#pragma GCC optimize(&quot;-fpartial-inlining&quot;)
+#pragma GCC optimize(&quot;no-stack-protector&quot;)
+#pragma GCC optimize(&quot;-freorder-functions&quot;)
+#pragma GCC optimize(&quot;-findirect-inlining&quot;)
+#pragma GCC optimize(&quot;-fhoist-adjacent-loads&quot;)
+#pragma GCC optimize(&quot;-frerun-cse-after-loop&quot;)
+#pragma GCC optimize(&quot;inline-small-functions&quot;)
+#pragma GCC optimize(&quot;-finline-small-functions&quot;)
+#pragma GCC optimize(&quot;-ftree-switch-conversion&quot;)
+#pragma GCC optimize(&quot;-foptimize-sibling-calls&quot;)
+#pragma GCC optimize(&quot;-fexpensive-optimizations&quot;)
+#pragma GCC optimize(&quot;inline-functions-called-once&quot;)
+#pragma GCC optimize(&quot;-fdelete-null-pointer-checks&quot;)
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://ChirunoC9.github.io/post/kruskal-chong-gou-shu/">
+              <h3 class="post-title">
+                下一篇：Kruskal 重构树
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">只有在重重积累下，才能得到提升</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ChirunoC9.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

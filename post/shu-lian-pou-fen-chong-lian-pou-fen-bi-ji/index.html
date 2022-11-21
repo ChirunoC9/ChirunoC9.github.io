@@ -1,0 +1,548 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>重链剖分 | 中宮 さとり　</title>
+<meta name="description" content="只有在重重积累下，才能得到提升">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ChirunoC9.github.io/favicon.ico?v=1669018828300">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://ChirunoC9.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://ChirunoC9.github.io">
+        <img class="avatar" src="https://ChirunoC9.github.io/images/avatar.png?v=1669018828300" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://ChirunoC9.github.io">
+        <h1 class="site-title">中宮 さとり　</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+            <div class="feature-container" style="background-image: url('https://ChirunoC9.github.io/post-images/shu-lian-pou-fen-chong-lian-pou-fen-bi-ji.jpg')">
+            </div>
+          
+          <h2 class="post-title">重链剖分</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-11-15</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://ChirunoC9.github.io/tag/SelQUde5Q/">
+                    Data Structures
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content" v-pre>
+            <h1 id="重链剖分">重链剖分</h1>
+<h2 id="简介">简介</h2>
+<p>树链剖分，用于将树分割为若干条链的形式，以维护树上的信息。换句话说，将整棵树以一种方法剖分为若干条链，从而使得其可以重新组成线性结构，然后利用其他数据结构维护信息。</p>
+<p>一般不特别说明的话，树链剖分，一般指的是<strong>重链剖分</strong>。</p>
+<p>这里只介绍<strong>重链剖分</strong>。</p>
+<h2 id="重链剖分-2">重链剖分</h2>
+<p>这里先明确一些概念：</p>
+<ul>
+<li>重儿子：子节点中子树节点个数最大的节点。如果有多个的话，取其中一个。如果没有子节点，那么就没有重儿子。</li>
+<li>轻儿子：子节点中除了重儿子以外的其他节点。</li>
+<li>重边：父亲节点与重儿子相连的边。</li>
+<li>轻边：父亲节点和轻儿子相连的边。</li>
+<li>重链：由多条重边连接的路径。注意：落单的节点一般算作单独一条重链。</li>
+<li>轻链：由多条轻边连接的路径。</li>
+</ul>
+<p>比如下面这棵树</p>
+<figure data-type="image" tabindex="1"><img src="https://ChirunoC9.github.io/post-images/1668508206698.png" alt="" loading="lazy"></figure>
+<p>对它进行重链剖分，将会得到这样的结果。（其中，绿色实线指的是重边，虚线指的是轻边，画得比较壮烈...）</p>
+<figure data-type="image" tabindex="2"><img src="https://ChirunoC9.github.io/post-images/1668508221958.png" alt="" loading="lazy"></figure>
+<p>这样就完成了重链剖分。</p>
+<h3 id="前置数据">前置数据</h3>
+<p>下面是重链剖分需要用到的一些数据。</p>
+<pre><code class="language-cpp">int dad[N];  // 父亲节点
+int dep[N];  // 深度
+int siz[N];  // 子树节点个数
+int son[N];  // 重儿子
+int top[N];  // 所在重链的顶部节点
+int dfn[N];  // dfs序列
+int rnk[N];  // 记录dfs序列对应的节点编号
+</code></pre>
+<h3 id="如何实现">如何实现</h3>
+<p>树及树剖的代码实现。</p>
+<pre><code class="language-cpp">vector&lt;int&gt; edge[N];
+int dad[N], dep[N], siz[N], son[N], top[N] dfn[N], rnk[N], stamp = 0;
+</code></pre>
+<p>重链剖分需要两次dfs，以实现预处理。</p>
+<p>第一遍dfs需要实现下面的操作：</p>
+<ul>
+<li>找到节点所在子树的大小</li>
+<li>找到其重儿子</li>
+<li>找到其父亲</li>
+<li>处理其深度</li>
+</ul>
+<pre><code class="language-cpp">void dfs1(int from) {
+    son[from] = -1;
+    siz[from] = 1;
+    for (auto to : edge[from]) {
+        if (dep[to] == -1) {  // 实际上只要子节点没有被访问过就行
+            dep[to] == dep[from] + 1;
+            dad[to] = from;
+            dfs1(to);
+            siz[from] += siz[to];
+            if (son[from] == -1 || siz[to] &gt; siz[son[from]]) {
+                son[from] = to;
+            }
+        }
+    }
+}
+</code></pre>
+<p>第二遍dfs需要实现下面的操作：</p>
+<ul>
+<li>连接重链</li>
+<li>记录重链的链顶</li>
+<li>记录每个节点的dfs序</li>
+<li>记录dfs序对应的节点编号</li>
+</ul>
+<pre><code class="language-cpp">void dfs2(int from, int root) {
+    top[from] = root;
+    dfn[from] = ++ stamp;
+    rnk[stamp] = from;
+    if (son[from] == -1) {
+        return;
+    }
+    dfs2(son[from], root);
+    for (auto to : edge[from]) {
+        if (to != son[from] &amp;&amp; to != dad[from]) {
+            dfs2(to, to);
+        }
+    }
+}
+</code></pre>
+<p>之后，就可以根据dfs序，以合适的数据结构进行维护了。</p>
+<pre><code class="language-cpp">// 树剖启动
+void build(int root) {
+    memset(dep, -1, sizeof dep);
+    dep[root] = 0;
+    dfs1(root);
+    dfs2(root, root);
+}
+</code></pre>
+<h3 id="重链剖分的性质">重链剖分的性质</h3>
+<ol>
+<li>重链剖分是将整棵树完全剖分。</li>
+<li>树上每个点都属于且仅属于一条重链。</li>
+<li>剖分时重链优先遍历，且<strong>重链内的dfs序是有序的</strong>。</li>
+<li>向下经过一条轻边时，所在子树的大小至少会除以<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn></mrow><annotation encoding="application/x-tex">2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span>。</li>
+<li>从任意节点走到根节点，经过轻边的数量最多不会超过<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>log</mi><mo>⁡</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">\log{n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">n</span></span></span></span></span>条。</li>
+</ol>
+<p>利用第三条性质，再加上LCA，就可以利用一些维护区间的数据结构，对树进行维护。</p>
+<h3 id="lca">LCA</h3>
+<p>树上两个点，如果在同一条重链，深度深的就是公共祖先。</p>
+<p>如果不在的话，那么深度深的先跳，直到跳到同一条链上。</p>
+<p>根据上面第五个性质，可以发现其实每次就是跳出一条重链，并经过一条轻链。因此，其时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>log</mi><mo>⁡</mo><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(\log{n})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">n</span></span><span class="mclose">)</span></span></span></span>。</p>
+<pre><code class="language-cpp">int lca(int a, int b) {
+    while (top[a] != top[b]) {
+        if (dep[top[a]] &lt; dep[top[b]]) {
+            swap(a, b);
+        } 
+        a = fa[top[a]];
+    }
+    if (dep[a] &lt; dep[b]) {
+        return a;
+    } else {
+        return b;
+    }
+}
+</code></pre>
+<h3 id="维护树链">维护树链</h3>
+<p>同一条重链的dfs序是连续的，因此可以使用一些数据结构（如线段树）进行维护。下面是两道板子题，通过这两道题可以看出线段树是如何维护树链的性质的。</p>
+<h4 id="p2146-noi2015-软件包管理器">P2146 [NOI2015] 软件包管理器</h4>
+<p><a href="https://www.luogu.com.cn/problem/P2146">题目传送门</a></p>
+<p>知识点：线段树维护点权。</p>
+<p>对于<code>install</code>操作，也就是所有这个节点的祖先都需要被安装，因此，可以从这个节点的重链上起跳，直到跳到根节点链为止。显然，如果直接对链维护，时间复杂度为<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>log</mi><mo>⁡</mo><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(\log{n})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">n</span></span><span class="mclose">)</span></span></span></span>，如果其中是使用线段树进行维护的话，那么还有<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mo>(</mo><mi>log</mi><mo>⁡</mo><mi>n</mi><mo>)</mo></mrow><annotation encoding="application/x-tex">O(\log{n})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">n</span></span><span class="mclose">)</span></span></span></span>的时间复杂度（显然比暴力维护好）。</p>
+<p>对于<code>uninstall</code>操作，那么很显然，所有依赖于这份节点的儿子节点就会被卸掉。什么软件会被卸载掉呢？很明显，就是这个节点的的子树，所有的子树节点都会被标记为未安装状态。</p>
+<p>依据上面的思路的话，那么只需要对原先的树进行一次树剖就可以了。对应的线段树，需要的是一种类似于取反操作的线段树。同时，因为每次操作都需要一个返回软件包数量，因此，在修改的过程中，也可以附加上计数这个操作。</p>
+<pre><code class="language-cpp">/* P2146 [NOI2015] 软件包管理器 */
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int N = 1e5 + 10;
+
+vector&lt;int&gt; edge[N];
+int dep[N], son[N], fa[N], top[N], siz[N], dfn[N], rnk[N];
+int stamp = 0;
+
+int n;
+
+void add_edge(int from, int to) {
+    edge[from].push_back(to);
+    edge[to].push_back(from);
+}
+
+void build(int root) {
+    function&lt;void(int)&gt; dfs1 = [&amp;](int from) {
+        son[from] = -1;
+        siz[from] = 1;
+        for (auto to : edge[from]) {
+            if (!dep[to]) {
+                dep[to] = dep[from] + 1;
+                fa[to] = from;
+                dfs1(to);
+                siz[from] += siz[to];
+                if (son[from] == -1 || siz[to] &gt; siz[son[from]]) {
+                    son[from] = to;
+                }
+            }
+        }
+    };
+    function&lt;void(int,int)&gt; dfs2 = [&amp;](int from, int root) {
+        dfn[from] = ++ stamp;
+        rnk[from] = stamp;
+        top[from] = root;
+        if (son[from] == -1) {
+            return;
+        }
+        dfs2(son[from], root);
+        for (auto to : edge[from]) {
+            if (to != son[from] &amp;&amp; to != fa[from]) {
+                dfs2(to, to);
+            }
+        }
+    };
+
+    dep[root] = 1; 
+    dfs1(root);
+    dfs2(root, root);
+}
+
+int seg[N &lt;&lt; 2], lazy[N &lt;&lt; 2];
+void build(int l, int r, int id) {
+    if (l == r) {
+        lazy[id] = -1;
+    } else {
+        int mid = l + ((r - l) &gt;&gt; 1);
+        build(l, mid, id * 2);
+        build(mid + 1, r, id * 2 + 1);
+        lazy[id] = -1;
+    }
+}
+void rise(int id) {
+    seg[id] = seg[id * 2] + seg[id * 2 + 1];
+}
+void down(int l, int r, int id) {
+    auto &amp;d = lazy[id];
+    if (d == -1) {
+        return;
+    }
+    int mid = l + ((r - l) &gt;&gt; 1);
+    seg[id * 2] = (mid - l + 1) * d;
+    seg[id * 2 + 1] = (r - mid) * d;
+    lazy[id * 2] = d;
+    lazy[id * 2 + 1] = d;
+    d = -1;
+}
+int change(int l, int r, int id, int sl, int sr, int d) {
+    if (l == sl &amp;&amp; r == sr) {
+        int ret = seg[id];
+        seg[id] = (r - l + 1) * d;
+        lazy[id] = d;
+        ret = abs(ret - seg[id]);
+        return ret;
+    } else {
+        int mid = l + ((r - l) &gt;&gt; 1);
+        int ret = 0;
+        down(l, r, id);
+        if (sr &lt;= mid) {
+            ret = change(l, mid, id * 2, sl, sr, d);
+        } else if (sl &gt; mid) {
+            ret = change(mid + 1, r, id * 2 + 1, sl, sr, d);
+        } else {
+            ret = change(l, mid, id * 2, sl, mid, d) + change(mid + 1, r, id * 2 + 1, mid + 1, sr, d);
+        }
+        rise(id);
+        return ret;
+    }
+}
+
+int opt1(int x) {
+    int ret = 0;
+    while (dep[top[x]] &gt; 1) {
+        ret += change(1, n, 1, dfn[top[x]], dfn[x], 1);
+        x = fa[top[x]];
+    }
+    ret += change(1, n, 1, dfn[top[x]], dfn[x], 1);
+    return ret;
+}
+
+int opt2(int x) {
+    return change(1, n, 1, dfn[x], dfn[x] + siz[x] - 1, 0);
+}
+
+void Solution() {
+    cin &gt;&gt; n;
+    for (int i = 1; i &lt; n; ++ i) {
+        int x;
+        cin &gt;&gt; x;
+        add_edge(x, i);
+    }
+    build(0);
+
+    int q;
+    cin &gt;&gt; q;
+    while (q --) {
+        string opt;
+        cin &gt;&gt; opt;
+        if (opt == &quot;install&quot;) {
+            int x;
+            cin &gt;&gt; x;
+            cout &lt;&lt; opt1(x) &lt;&lt; '\n';
+        } else {
+            int x;
+            cin &gt;&gt; x;
+            cout &lt;&lt; opt2(x) &lt;&lt; '\n';
+        }
+    }
+}
+
+int main() {
+    std::cin.tie(nullptr)-&gt;sync_with_stdio(false);
+    Solution();
+}
+</code></pre>
+<h4 id="p2420-让我们异或吧">P2420 让我们异或吧</h4>
+<p><a href="https://www.luogu.com.cn/problem/P2420">题目传送门</a></p>
+<p>知识点：线段树维护边权。</p>
+<p>题意简述一下，就是给定一棵树，需要对每次询问，求出两点之间路径上所有<strong>边权</strong>的异或和。</p>
+<p>树链剖分最擅长的事情就是解决树上路径的事情了。但是，本题中要解决的却是<strong>边权</strong>的异或和，而树链剖分解决的，却是点权问题。</p>
+<p>这时候就需要将边权下放，如<strong>父亲节点连向儿子节点的边，其边权给儿子节点</strong>。这样，就完成了边权转化为点权的任务了。在之后的查询过程中，由于lca节点代表的边权其实并不属于要查询的路径，那么对于dfs序列来说，不查lca相当于lca节点的dfn序+1，也就是最多查到lca节点的子儿子（如果两个节点跳到同一个节点的话，那么这个节点就不查了）。这样，前置树链剖分就完成了。</p>
+<p>接下来是根据dfn序的点值建维护区间异或和的线段树，查询就解决了。</p>
+<pre><code class="language-cpp">/* P2420 让我们异或吧 */
+#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+const int N = 1e6 + 10;
+vector&lt;pair&lt;int,int&gt;&gt; edge[N];
+
+int top[N], siz[N], fa[N], dep[N], son[N], dfn[N];
+int stamp = 0;
+int w[N], _w[N];
+
+void add_edge(int from, int to, int w) {
+    edge[from].push_back({to, w});
+    edge[to].push_back({from, w});
+}
+
+void dfs1(int from, int w) {
+    siz[from] = 1;
+    son[from] = -1;
+    _w[from] = w;
+    for (auto [to, _w] : edge[from]) {
+        if (!dep[to]) {
+            dep[to] = dep[from] + 1;
+            fa[to] = from;
+            dfs1(to, _w);
+            siz[from] += siz[to];
+            if (son[from] == -1 || siz[to] &gt; siz[son[from]]) {
+                son[from] = to;
+            }
+        }
+    }
+}
+void dfs2(int from, int root) {
+    dfn[from] = ++ stamp;
+    top[from] = root;
+    w[dfn[from]] = _w[from];
+    if (son[from] == -1) {
+        return;
+    }
+    dfs2(son[from], root);
+    for (auto [to, _] : edge[from]) {
+        if (to != son[from] &amp;&amp; to != fa[from]) {
+            dfs2(to, to);
+        }
+    }
+}
+void build(int root) {
+    dep[root] = 1;
+    dfs1(root, 0);
+    dfs2(root, root);
+}
+
+int n;
+int seg[N &lt;&lt; 2];
+
+void build(int l, int r, int id) {
+    if (l == r) {
+        seg[id] = w[l];
+    } else {
+        int mid = l + ((r - l) &gt;&gt; 1);
+        build(l, mid, id * 2);
+        build(mid + 1, r, id * 2 + 1);
+        seg[id] = seg[id * 2] ^ seg[id * 2 + 1];
+    }
+}
+int query(int l, int r, int id, int ql, int qr) {
+    if (l == ql &amp;&amp; r == qr) {
+        return seg[id];
+    } else {
+        int mid = l + ((r - l) &gt;&gt; 1);
+        if (qr &lt;= mid) {
+            return query(l, mid, id * 2, ql, qr);
+        } else if (ql &gt; mid) {
+            return query(mid + 1, r, id * 2 + 1, ql, qr);
+        } else {
+            return query(l, mid, id * 2, ql, mid) ^ query(mid + 1, r, id * 2 + 1, mid + 1, qr);
+        }
+    }
+}
+int query(int a, int b) {
+    int ret = 0;
+    while (top[a] != top[b]) {
+        if (dep[top[a]] &lt; dep[top[b]]) {
+            swap(a, b);
+        }
+        ret ^= query(1, n, 1, dfn[top[a]], dfn[a]);
+        a = fa[top[a]];
+    }
+    if (dep[a] &gt; dep[b]) {
+        swap(a, b);
+    }
+    if (dep[a] &lt; dep[b]) {
+        ret ^= query(1, n, 1, dfn[a] + 1, dfn[b]);
+    }
+    return ret;
+}
+
+void Solution() {
+    cin &gt;&gt; n;
+    for (int i = 1; i &lt; n; ++ i) {
+        int a, b, w;
+        cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+        add_edge(a, b, w);
+    }
+    build(1);
+    build(1, n, 1);
+
+    int q;
+    cin &gt;&gt; q;
+    while (q --) {
+        int a, b;
+        cin &gt;&gt; a &gt;&gt; b;
+        cout &lt;&lt; query(a, b) &lt;&lt; '\n';
+    }
+}
+
+int32_t main() {
+    std::cin.tie(nullptr)-&gt;sync_with_stdio(false);
+    Solution();
+}
+</code></pre>
+
+          </div>
+        </div>
+
+        
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">只有在重重积累下，才能得到提升</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ChirunoC9.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

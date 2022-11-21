@@ -1,0 +1,461 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>Kruskal 重构树 | 中宮 さとり　</title>
+<meta name="description" content="只有在重重积累下，才能得到提升">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ChirunoC9.github.io/favicon.ico?v=1669018828300">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://ChirunoC9.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://ChirunoC9.github.io">
+        <img class="avatar" src="https://ChirunoC9.github.io/images/avatar.png?v=1669018828300" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://ChirunoC9.github.io">
+        <h1 class="site-title">中宮 さとり　</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+            <div class="feature-container" style="background-image: url('https://ChirunoC9.github.io/post-images/kruskal-chong-gou-shu.jpg')">
+            </div>
+          
+          <h2 class="post-title">Kruskal 重构树</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-11-15</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://ChirunoC9.github.io/tag/SelQUde5Q/">
+                    Data Structures
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content" v-pre>
+            <h1 id="kruskal-重构树">Kruskal 重构树</h1>
+<p>Kruskal 重构树，就是基于 Kruskal 最小生成树算法的基础上改造得到的树（森林）。</p>
+<blockquote>
+<p>为什么会有存在森林的情况？<br>
+当原图是不连通的情况下，我们显然是无法得到生成树的，最后得到的是森林。</p>
+</blockquote>
+<h2 id="建树过程">建树过程</h2>
+<blockquote>
+<p>前置知识：Kruskal 算法</p>
+</blockquote>
+<p>首先，我们在进行 Kruskal 算法中，将原图的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 个节点看作是一个集合，原图的节点的点权为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn></mrow><annotation encoding="application/x-tex">0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">0</span></span></span></span> 。之后我们在进行 Kruskal 算法的过程中，给每一条要加入生成树的边建立一个新的节点，并将边权赋予这个新的节点，同时将这条边连接的两个集合连接到这个节点上，使两个集合合并为一个集合，并且这个子树的根是加入的新节点。</p>
+<figure data-type="image" tabindex="1"><img src="https://ChirunoC9.github.io/post-images/1668523401251.png" alt="" loading="lazy"></figure>
+<figure data-type="image" tabindex="2"><img src="https://ChirunoC9.github.io/post-images/1668523416087.png" alt="" loading="lazy"></figure>
+<p>对于原先 Kruskal 求生成树的过程，我们最多会得到 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 个节点和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> 条边。到 Kruskal 重构树，由于我们将每一条边转化为一个顶点，那么重构树中最多会有 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>2</mn><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2n - 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">2</span><span class="mord mathdefault">n</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> 个节点，并且原图的 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">n</span></span></span></span> 个节点就是重构树的所有叶子节点，每个非叶子节点也恰好有两个儿子。</p>
+<blockquote>
+<p>为什么是“最多”？<br>
+假设原图不连通，那么我们无法求得原图的生成树，只能得到森林。对于重构树来说，我们是每次将两个子树合并为一棵新的树，假设原图不连通，那么一定有两颗或以上的树无法合并为一棵树，那么求到的就是森林了。</p>
+</blockquote>
+<p>我们再考虑一下建立后的重构树是长什么样子的。为了方便，我们假设基于最小生成树建立重构树，且原图是连通的，那么重构树建立后一定是一个大根堆。</p>
+<p>我们在基于最小生成树建立重构树的时候，是将边权从小到大依次加入，那么我们建立新的节点时也是自底向上建立，下面的节点总是优先于上面的节点，点权也总是小于上面的节点，因此最后建立的重构树也一定是一个大根堆。同理，如果我们是基于最大生成树建立的话，那么就会反过来，是一个小根堆了。</p>
+<blockquote>
+<p>如果原图不连通的情况下，我们得到的就是多个堆了。</p>
+</blockquote>
+<p>还有一个很重要的性质：对于原图中两个点 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">u</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span></span></span></span> 之间的所有简单路径上的最大边权最小值，其等价于最小生成树上这两个点之间简单路径的最大值，对应 Kruskal 重构树上则是这两个点的 lca 的权值。如果我们需要求原图中两个点之间的所有简单路径上的最小边权最大值，那么我们只需要基于最大生成树即可。</p>
+<blockquote>
+<p>假设原图不连通，那么我们就需要特判一下。</p>
+</blockquote>
+<h2 id="建立代码">建立代码</h2>
+<pre><code class="language-cpp">const int N = 1e5 + 10;
+std::vector&lt;int&gt; edge[N];
+int vw[N];
+void add_edge(int from, int to) {
+	edge[from].emplace_back(to);
+	edge[to].emplace_back(from);
+}
+int dad[N];
+int Find(int x) {
+	if (dad[x] == -1) {
+		return x;
+	}
+	return dad[x] = Find(dad[x]);
+}
+bool Merge(int a, int b) {
+	a = Find(a); b = Find(b);
+	if (a == b) return false;
+	dad[b] = a;
+	return true;
+}
+
+void solve() {
+	int n, m;
+	std::cin &gt;&gt; n &gt;&gt; m;
+	memset(dad, -1, sizeof dad);
+	std::vector&lt;std::array&lt;int,3&gt;&gt; eds(m);
+	for (auto &amp;[a, b, w] : eds) {
+		std::cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+	}
+	std::sort(eds.begin(), eds.end(), [](const auto &amp;a, const auto &amp;b) {
+		return a[2] &gt; b[2];
+	});
+	int tot = n;
+	for (auto [a, b, w] : eds) {
+		a = Find(a); b = Find(b);
+		if (a != b) {
+			tot ++;
+			vw[tot] = w;
+			dad[a] = dad[b] = tot;
+			add_edge(tot, a);
+			add_edge(tot, b);
+		}
+	}
+}
+</code></pre>
+<h2 id="题目-洛谷-p4197-peaks">题目 洛谷 P4197 Peaks</h2>
+<p><a href="https://www.luogu.com.cn/problem/P4197">传送门</a></p>
+<p>首先，我们需要能够快速找到困难值小于等于 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault">x</span></span></span></span> 的道路。如果我们考虑贪心的话，肯定是困难度越小的道路走到的点越多越好。因此，我们可以先求原图的最小生成树。</p>
+<p>其次，我们要知道“查询从某个点出发经过边权不超过 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>v</mi><mi>a</mi><mi>l</mi></mrow><annotation encoding="application/x-tex">val</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">v</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span></span></span></span> 的边所能到达的节点”，这个问题等价于我们求两个点之间边权最小值的最大值是多少，只是我们现在要反过来，先找这个点，再找两个点的位置。我们考虑 Kruskal 重构树，如果我们按最小生成树的方式去建立 Kruskal 重构树，那么我们最后得到的是一个大根堆，上述问题我们就可以利用树上倍增的方式快速找到那个节点所在的位置。</p>
+<p>我们现在可以找到根节点的位置了，但是我们要怎么确定从一个节点在这个根节点的限制下能够走到多少节点呢？我们回想一下所建立的 Kruskal 重构树有什么特点？<strong>是一个大根堆</strong>！也就是说，以我们找的节点作为根节点，这颗子树上面的节点全是我们可以走到的，因为边权都小于这个节点。因此，我们要查询的话，可以直接查询整棵子树中的节点。但要注意的是，Kruskal 重构树的所有非叶子节点<strong>都是我们额外添加的</strong>，并不属于原图的节点，因此，我们只需要查询整棵子树，但是只有叶子节点的信息即可。</p>
+<p>那么查询第 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.03148em;">k</span></span></span></span> 大呢？直接 Kruskal 重构树的 dfn 序列上使用主席树就好了（当然好像自底向上线段树合并也行？不过我这么写总是有奇奇怪怪的地方错误）。</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+
+struct Fread {
+	char *p1, *p2, buf[100000];
+	constexpr char nextchar() noexcept {
+		return (p1==p2 &amp;&amp; (p2=(p1=buf)+fread(buf,1,100000,stdin),p1==p2)?EOF:*p1++);
+	}
+	template &lt;class T&gt; constexpr void read(T &amp;val) noexcept {
+		val = 0;
+		int f = 1;
+		char ch = nextchar();
+		while (ch &lt; 48 || ch &gt; 57) {
+			if (ch == '-') {
+				f = -1;
+			}
+			ch = nextchar();
+		}
+		while (ch &gt;= 48 &amp;&amp; ch &lt;= 57) {
+			val = val * 10 + ch - 48, ch = nextchar();
+		}
+		val *= f;
+	}
+	template &lt;class T&gt; constexpr Fread&amp; operator &gt;&gt; (T &amp;val) noexcept {
+		this-&gt;read(val);
+		return *this;
+	}
+} fin;
+
+struct Fwrite {
+	template &lt;class T&gt; constexpr void write(T x) {
+		if (x &lt; 0) {
+			putchar('-');
+			x = -x;
+		}
+		if (x &gt; 9)
+			write(x / 10);
+		putchar(x % 10 + '0');
+	}
+	constexpr void write(char x) { putchar(x); }
+	constexpr void write(const char *x) { puts(x); }
+	template &lt;class T&gt; constexpr Fwrite&amp; operator &lt;&lt; (const T &amp;x) {
+		this-&gt;write(x);
+		return *this;
+	}
+} fout;
+
+const int N = 2e5 + 10;
+
+int dad[N];
+int find(int x) {
+	if (dad[x] &lt;= -1) {
+		return x;
+	}
+	return dad[x] = find(dad[x]);
+}
+
+std::vector&lt;int&gt; edge[N];
+int dfn[N], rnk[N], siz[N], stamp = 0, vw[N];
+void add_edge(int from, int to) {
+	edge[from].emplace_back(to);
+	edge[to].emplace_back(from);
+}
+int fa[N][31];
+int lg[N];
+void init() {
+	lg[0] = lg[1] = 0;
+	for (int i = 2; i &lt; N; i ++) {
+		lg[i] = lg[i / 2] + 1;
+	}
+}
+void dfs(int now, int dad) {
+	dfn[now] = ++ stamp;
+	rnk[stamp] = now;
+	siz[now] = 1;
+	for (int i = 1; i &lt;= 30; i ++) {
+		fa[now][i] = fa[fa[now][i - 1]][i - 1];
+	}
+	for (auto nex : edge[now]) {
+		if (nex != dad) {
+			dfs(nex, now);
+			siz[now] += siz[nex];
+		}
+	}
+}
+
+struct Node {
+	int val;
+	int lc, rc;
+	Node() : val(0), lc(0), rc(0) {}
+} seg[N &lt;&lt; 4];
+int ver[N], tt = 0;
+int getNode() {
+	return ++ tt;
+}
+void rise(int id) {
+	seg[id].val = seg[ seg[id].lc ].val + seg[ seg[id].rc ].val;
+}
+void extend(int oid, int nid) {
+	seg[nid].lc = seg[oid].lc; seg[nid].rc = seg[oid].rc;
+}
+void build(int l, int r, int &amp;id) {
+	id = getNode();
+	if (l == r) {
+		seg[id].val = -1;
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		build(l, mid, seg[id].lc);
+		build(mid + 1, r, seg[id].rc);
+		rise(id);
+	}
+}
+void insert(int l, int r, int oid, int &amp;nid, int tag, int d) {
+	nid = getNode();
+	if (l == r) {
+		seg[nid].val = seg[oid].val + d;
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		extend(oid, nid);
+		if (tag &lt;= mid) {
+			insert(l, mid, seg[oid].lc, seg[nid].lc, tag, d);
+		} else {
+			insert(mid + 1, r, seg[oid].rc, seg[nid].rc, tag, d);
+		}
+		rise(nid);
+	}
+}
+int query_mx_kth(int l, int r, int lid, int rid, int kth) {
+	debug(seg[rid].val-seg[lid].val, seg[rid].val, seg[lid].val, kth);
+	if (seg[rid].val - seg[lid].val &lt; kth) {
+		return -1;
+	} else if (l == r) {
+		return l;
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		int x = seg[ seg[rid].rc ].val - seg[ seg[lid].rc ].val;
+		if (x &gt;= kth) {
+			return query_mx_kth(mid + 1, r, seg[lid].rc, seg[rid].rc, kth);
+		} else {
+			return query_mx_kth(l, mid, seg[lid].lc, seg[rid].lc, kth - x);
+		}
+	}
+}
+
+int main() {
+	std::cin.tie(nullptr)-&gt;sync_with_stdio(false);
+	int n, m, q;
+	// std::cin &gt;&gt; n &gt;&gt; m &gt;&gt; q;
+	fin &gt;&gt; n &gt;&gt; m &gt;&gt; q;
+	std::vector&lt;int&gt; hei(n + 1), chei(n);
+	for (int i = 1; i &lt;= n; i ++) {
+		// std::cin &gt;&gt; hei[i];
+		fin &gt;&gt; hei[i];
+		chei[i - 1] = hei[i]; 
+	}
+	std::ranges::sort(chei);
+	chei.erase(std::unique(chei.begin(), chei.end()), chei.end());
+	for (int i = 1; i &lt;= n; i ++) {
+		hei[i] = std::ranges::lower_bound(chei, hei[i]) - chei.begin() + 1;
+	}
+	
+	std::vector&lt;std::array&lt;int,3&gt;&gt; eds(m);
+	for (auto &amp;[a, b, w] : eds) {
+		// std::cin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+		fin &gt;&gt; a &gt;&gt; b &gt;&gt; w;
+	}
+	std::ranges::sort(eds, [](const auto &amp;a, const auto &amp;b) -&gt; bool {
+		return a[2] &lt; b[2];
+	});
+	int tot = n;
+	memset(dad, -1, sizeof(dad));
+	memset(vw, -1, sizeof(vw));
+	for (auto [a, b, w] : eds) {
+		a = find(a); b = find(b);
+		if (a != b) {
+			tot ++;
+			dad[a] = dad[b] = tot;
+			vw[tot] = w;
+			fa[a][0] = fa[b][0] = tot;
+			add_edge(tot, a);
+			add_edge(tot, b);
+		}
+	}
+	init();
+	for (int i = tot; i &gt;= 1; i --) {
+		if (!dfn[i]) {
+			dfs(i, 0);
+		}
+	}
+
+	int nn = chei.size();
+	build(1, nn, ver[0]);
+	for (int i = 1; i &lt;= tot; i ++) {
+		if (vw[rnk[i]] == -1) {
+			insert(1, nn, ver[i - 1], ver[i], hei[rnk[i]], 1);
+		} else {
+			ver[i] = ver[i - 1];
+		}
+	}
+
+	while (q --) {
+		int v, x, k;
+		// std::cin &gt;&gt; v &gt;&gt; x &gt;&gt; k;
+		fin &gt;&gt; v &gt;&gt; x &gt;&gt; k;
+		if (v &lt; 1 || v &gt; n || k &gt; n) {
+			// std::cout &lt;&lt; -1 &lt;&lt; '\n';
+			fout &lt;&lt; -1 &lt;&lt; '\n';
+		} else {
+			for (int i = 30; i &gt;= 0; i --) {
+				debug(v, fa[v][i]);
+				if (fa[v][i] &amp;&amp; vw[fa[v][i]] &lt;= x) {
+					v = fa[v][i];
+				}
+			}
+			debug(v);
+			int ret = query_mx_kth(1, nn, ver[dfn[v] - 1], ver[dfn[v] + siz[v] - 1], k);
+			if (ret == -1) {
+				// std::cout &lt;&lt; -1 &lt;&lt; '\n';
+				fout &lt;&lt; -1 &lt;&lt; '\n';
+			} else {
+				// std::cout &lt;&lt; chei[ret - 1] &lt;&lt; '\n';
+				fout &lt;&lt; chei[ret - 1] &lt;&lt; '\n';
+			}
+		}
+	}
+}
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://ChirunoC9.github.io/post/codeforces-round-752-div-2-a~d/">
+              <h3 class="post-title">
+                下一篇：Codeforces Round #752 (Div. 2) A~D
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">只有在重重积累下，才能得到提升</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ChirunoC9.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>

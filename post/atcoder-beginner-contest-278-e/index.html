@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    
+<meta charset="utf-8" >
+
+<title>AtCoder Beginner Contest 278 D~E | 中宮 さとり　</title>
+<meta name="description" content="只有在重重积累下，才能得到提升">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://ChirunoC9.github.io/favicon.ico?v=1669018828300">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://ChirunoC9.github.io/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+      <div class="site-header-container">
+  <div class="site-header">
+    <div class="left">
+      <a href="https://ChirunoC9.github.io">
+        <img class="avatar" src="https://ChirunoC9.github.io/images/avatar.png?v=1669018828300" alt="" width="32px" height="32px">
+      </a>
+      <a href="https://ChirunoC9.github.io">
+        <h1 class="site-title">中宮 さとり　</h1>
+      </a>
+    </div>
+    <div class="right">
+      <transition name="fade">
+        <i class="icon" :class="{ 'icon-close-outline': menuVisible, 'icon-menu-outline': !menuVisible }" @click="menuVisible = !menuVisible"></i>
+      </transition>
+    </div>
+  </div>
+</div>
+
+<transition name="fade">
+  <div class="menu-container" style="display: none;" v-show="menuVisible">
+    <div class="menu-list">
+      
+        
+          <a href="/" class="menu purple-link">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="menu purple-link">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="menu purple-link">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="menu purple-link">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+</transition>
+
+
+      <div class="content-container">
+        <div class="post-detail">
+          
+            <div class="feature-container" style="background-image: url('https://ChirunoC9.github.io/post-images/atcoder-beginner-contest-278-e.jpg')">
+            </div>
+          
+          <h2 class="post-title">AtCoder Beginner Contest 278 D~E</h2>
+          <div class="post-info post-detail-info">
+            <span><i class="icon-calendar-outline"></i> 2022-11-20</span>
+            
+              <span>
+                <i class="icon-pricetags-outline"></i>
+                
+                  <a href="https://ChirunoC9.github.io/tag/UeN3-KuSe/">
+                    Atcoder
+                    
+                      ，
+                    
+                  </a>
+                
+                  <a href="https://ChirunoC9.github.io/tag/POODXDkqp/">
+                    Tutorial
+                    
+                  </a>
+                
+              </span>
+            
+          </div>
+          <div class="post-content" v-pre>
+            <h1 id="atcoder-beginner-contest-278-d~e">AtCoder Beginner Contest 278 D~E</h1>
+<h2 id="d-all-assign-point-add">D - All Assign Point Add</h2>
+<p>思路：区间修改+区间覆盖+单点查询，直接上线段树即可。</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+template &lt;class T&gt; constexpr T inf = std::numeric_limits&lt;T&gt;::max() / 2;
+using ll = long long;
+
+const int N = 2e5 + 10;
+
+struct Info {
+	ll val;
+	Info(const ll v = 0) : val(v) {}
+	friend Info operator + (const Info &amp;a, const Info &amp;b) {
+		return a.val + b.val;
+	}
+};
+struct Node {
+	Info val;
+	ll lz_a, lz_d;
+	Node() : val(), lz_a(0), lz_d(-1) {}
+} seg[N &lt;&lt; 2];
+int a[N];
+
+void rise(int id) {
+	seg[id].val = seg[id * 2].val + seg[id * 2 + 1].val;
+}
+void update1(int l, int r, int id, ll d) {
+	seg[id].val.val += (r - l + 1) * d;
+	seg[id].lz_a += d;
+}
+void update2(int l, int r, int id, int d) {
+	seg[id].val.val = (r - l + 1) * d;
+	seg[id].lz_d = d;
+	seg[id].lz_a = 0;
+}
+void down(int l, int r, int id) {
+	int mid = l + ((r - l) &gt;&gt; 1);
+	if (seg[id].lz_d != -1) {
+		auto &amp;d = seg[id].lz_d;
+		update2(l, mid, id * 2, d);
+		update2(mid + 1, r, id * 2 + 1, d);
+		d = -1;
+	}
+	if (seg[id].lz_a != 0) {
+		auto &amp;d = seg[id].lz_a;
+		update1(l, mid, id * 2, d);
+		update1(mid + 1, r, id * 2 + 1, d);
+		d = 0;
+	}
+}
+
+void build(int l, int r, int id) {
+	if (l == r) {
+		seg[id].val = a[l];
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		build(l, mid, id * 2);
+		build(mid + 1, r, id * 2 + 1);
+		rise(id);
+	}
+}
+void add(int l, int r, int id, int al, int ar, ll d) {
+	if (l == al &amp;&amp; r == ar) {
+		// seg[id].val.val += (r - l) * d;
+		update1(l, r, id, d);
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		down(l, r, id);
+		if (ar &lt;= mid) {
+			add(l, mid, id * 2, al, ar, d);
+		} else if (al &gt; mid) {
+			add(mid + 1, r, id * 2 + 1, al, ar, d);
+		} else {
+			add(l, mid, id * 2, al, mid, d);
+			add(mid + 1, r, id * 2 + 1, mid + 1, ar, d);
+		}
+		rise(id);
+	}
+}
+void modify(int l, int r, int id, int ml, int mr, ll d) {
+	if (l == ml &amp;&amp; r == mr) {
+		update2(l, r, id, d);
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		down(l, r, id);
+		if (mr &lt;= mid) {
+			modify(l, mid, id * 2, ml, mr, d);
+		} else if (ml &gt; mid) {
+			modify(mid + 1, r, id * 2 + 1, ml, mr, d);
+		} else {
+			modify(l, mid, id * 2, ml, mid, d); modify(mid + 1, r, id * 2 + 1, mid + 1, mr, d);
+		}
+		rise(id);
+	}
+}
+Info query(int l, int r, int id, int ql, int qr) {
+	if (l == ql &amp;&amp; r == qr) {
+		return seg[id].val;
+	} else {
+		int mid = l + ((r - l) &gt;&gt; 1);
+		down(l, r, id);
+		if (qr &lt;= mid) {
+			return query(l, mid, id * 2, ql, qr);
+		} else if (ql &gt; mid) {
+			return query(mid + 1, r, id * 2 + 1, ql, qr);
+		} else {
+			return query(l, mid, id * 2, ql, mid) + query(mid + 1, r, id * 2 + 1, mid + 1, qr);
+		}
+	}
+}
+
+void Solve() {
+	int n;
+	cin &gt;&gt; n;
+	for (int i = 1; i &lt;= n; i ++) {
+		cin &gt;&gt; a[i];
+	}
+	build(1, n, 1);
+	int q;
+	cin &gt;&gt; q;
+	while (q --) {
+		int opt;
+		cin &gt;&gt; opt;
+		if (opt == 1) {
+			ll  x;
+			cin &gt;&gt; x;
+			modify(1, n, 1, 1, n, x);
+		} else if (opt == 2) {
+			int i;
+			ll x;
+			cin &gt;&gt; i &gt;&gt; x;
+			add(1, n, 1, i, i, x);
+		} else {
+			int i;
+			cin &gt;&gt; i;
+			cout &lt;&lt; query(1, n, 1, i, i).val &lt;&lt; '\n';
+		}
+	}
+}
+
+int32_t main() {
+	std::cin.tie(nullptr)-&gt;sync_with_stdio(false);
+	std::cout &lt;&lt; std::fixed &lt;&lt; std::setprecision(12);
+	int t = 1;
+	// std::cin &gt;&gt; t;
+	for (int rp = 1; t --&gt; 0; rp ++) {
+		Solve();
+	}
+}
+</code></pre>
+<h2 id="e-grid-filling">E - Grid Filling</h2>
+<p>思路：我们要做的，就是找个方法能够快速去统计那个阴影矩形内的信息，越快越好。这时候，自然可以想到二维前缀和。所以，我们只需要做一次二维前缀和的预处理，然后直接计算每个数字出现的次数就行了。</p>
+<pre><code class="language-cpp">void Solve() {
+	int N, M, I, n, m;	
+	cin &gt;&gt; N &gt;&gt; M &gt;&gt; I &gt;&gt; n &gt;&gt; m;
+	vector a(N + 1, vector&lt;int&gt;(M + 1));
+	vector cnt(N + 1, vector(M + 1, vector(I + 1, 0)));
+	for (int i = 1; i &lt;= N; i ++) {
+		for (int j = 1; j &lt;= M; j ++) {
+			cin &gt;&gt; a[i][j];
+			cnt[i][j][a[i][j]] ++;
+		}
+	}
+	for (int i = 1; i &lt;= N; i ++) {
+		for (int j = 1; j &lt;= M; j ++) {
+			for (int k = 1; k &lt;= I; k ++) {
+				cnt[i][j][k] += cnt[i - 1][j][k] + cnt[i][j - 1][k] - cnt[i - 1][j - 1][k];
+			}
+			debug(i, j, cnt[i][j]);
+		}
+	}
+
+	for (int i = n; i &lt;= N; i ++) {
+		for (int j = m; j &lt;= M; j ++) {
+			int ans = {};
+			for (int k = 1; k &lt;= I; k ++) {
+				int d = cnt[i][j][k] - cnt[i - n][j][k] - cnt[i][j - m][k] + cnt[i - n][j - m][k];
+				// cerr &lt;&lt; d &lt;&lt; ' ' &lt;&lt; '|' &lt;&lt; &quot; &quot;;
+				d = cnt[N][M][k] - d;
+				// cerr &lt;&lt; d &lt;&lt; ' ';
+				if (d &gt; 0) {
+					ans ++;
+				}
+			}
+			// cerr &lt;&lt; '\n';
+			cout &lt;&lt; ans &lt;&lt; &quot; &quot;;
+		}
+		cout &lt;&lt; '\n';
+	}
+}
+</code></pre>
+
+          </div>
+        </div>
+
+        
+          <div class="next-post">
+            <a class="purple-link" href="https://ChirunoC9.github.io/post/qi-wang-dp/">
+              <h3 class="post-title">
+                下一篇：期望 DP
+              </h3>
+            </a>
+          </div>
+          
+      </div>
+
+      
+
+      <div class="site-footer">
+  <div class="slogan">只有在重重积累下，才能得到提升</div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://ChirunoC9.github.io/atom.xml" target="_blank">RSS</a>
+</div>
+
+
+    </div>
+    <script type="application/javascript">
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
